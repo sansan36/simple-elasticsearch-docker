@@ -1,0 +1,107 @@
+version: '3.8'
+services:
+  elastic-node1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+    container_name: elastic-node1
+    environment:
+      - discovery.seed_hosts=elastic-node2,elastic-node3,elastic-node4
+      - cluster.initial_master_nodes=elastic-node1,elastic-node2,elastic-node3,elastic-node4
+      - cluster.name=elastic-cluster
+      - node.name=elastic-node1
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - ELASTIC_PASSWORD=elastic
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elastic-node1-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - elastic-network
+
+  elastic-node2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+    container_name: elastic-node2
+    environment:
+      - discovery.seed_hosts=elastic-node1,elastic-node3,elastic-node4
+      - cluster.initial_master_nodes=elastic-node1,elastic-node2,elastic-node3,elastic-node4
+      - cluster.name=elastic-cluster
+      - node.name=elastic-node2
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - ELASTIC_PASSWORD=elastic
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elastic-node2-data:/usr/share/elasticsearch/data
+    ports:
+      - 9201:9200
+      - 9301:9300
+    networks:
+      - elastic-network
+
+  elastic-node3:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+    container_name: elastic-node3
+    environment:
+      - discovery.seed_hosts=elastic-node1,elastic-node2,elastic-node4
+      - cluster.initial_master_nodes=elastic-node1,elastic-node2,elastic-node3,elastic-node4
+      - cluster.name=elastic-cluster
+      - node.name=elastic-node3
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - ELASTIC_PASSWORD=elastic
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elastic-node3-data:/usr/share/elasticsearch/data
+    ports:
+      - 9202:9200
+      - 9302:9300
+    networks:
+      - elastic-network
+
+  elastic-node4:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+    container_name: elastic-node4
+    environment:
+      - discovery.seed_hosts=elastic-node1,elastic-node2,elastic-node3
+      - cluster.initial_master_nodes=elastic-node1,elastic-node2,elastic-node3,elastic-node4
+      - cluster.name=elastic-cluster
+      - node.name=elastic-node4
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - ELASTIC_PASSWORD=elastic
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elastic-node4-data:/usr/share/elasticsearch/data
+    ports:
+      - 9203:9200
+      - 9303:9300
+    networks:
+      - elastic-network
+
+networks:
+  elastic-network:
+    driver: bridge
+
+volumes:
+  elastic-node1-data:
+  elastic-node2-data:
+  elastic-node3-data:
+  elastic-node4-data:
